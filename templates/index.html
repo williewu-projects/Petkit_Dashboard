@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Petkit Dashboard</title>
+    <style>
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Petkit Dashboard</h1>
+    <img src="{{ url_for('static', filename='weight_chart.png') }}" alt="Weight Chart"><br>
+    <img src="{{ url_for('static', filename='toilet_usage_bar_chart.png') }}" alt="Toilet Usage Bar Chart"><br>
+    <img src="{{ url_for('static', filename='toilet_duration_histogram.png') }}" alt="Toilet Duration Histogram"><br>
+</body>
+</html>
