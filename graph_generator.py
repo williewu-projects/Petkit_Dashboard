@@ -1,17 +1,22 @@
 import psycopg2
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 import matplotlib.dates as mdates
 import matplotlib.patches as mpatches
 import os
+import subprocess
+from datetime import datetime
 from dotenv import load_dotenv
 import numpy as np
 import pandas as pd
+
 
 LITTERBOX_BIN_SIZE = 5
 
 load_dotenv()
 
+matplotlib.use('Agg')
 
 def generate_graph():
     conn = psycopg2.connect(
@@ -44,7 +49,7 @@ def generate_graph():
 
     plt.figure(figsize=(10, 4))
     plt.plot(times, weights, marker='o')
-    plt.title("Mi-chan Weight Over Time")
+    plt.title(f"Mi-chan Weight Over Time\nGenerated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     plt.xlabel("Time")
     
     date_format = DateFormatter("%a %m/%d")
@@ -70,6 +75,8 @@ def generate_graph():
     plt.tight_layout()
     os.makedirs("static", exist_ok=True)
     plt.savefig("static/weight_chart.png")
+    plt.savefig("../my_dakboard_data/charts/weight_chart.png")
+    push_chart_to_repo("weight_chart.png", "../my_dakboard_data/charts")
     plt.close()
     #endregion
 
@@ -122,7 +129,7 @@ def generate_duration_histogram():
         edgecolor='black',
         stacked=True
     )
-    plt.title("Distribution of Litterbox Duration - Last 30 Days")
+    plt.title(f"Distribution of Litterbox Duration - Last 30 Days\nGenerated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     plt.xlabel("Duration (seconds)")
     plt.ylabel("Frequency")
     plt.grid(True)
@@ -143,6 +150,8 @@ def generate_duration_histogram():
 
     os.makedirs("static", exist_ok=True)
     plt.savefig("static/toilet_duration_histogram.png")
+    plt.savefig("../my_dakboard_data/charts/toilet_duration_histogram.png")
+    push_chart_to_repo("toilet_duration_histogram.png", "../my_dakboard_data/charts")
     plt.close()
 
 def generate_usage_bar_chart():
@@ -181,12 +190,14 @@ def generate_usage_bar_chart():
     ax = pivot_df.plot(
         kind='bar',
         stacked=True,
-        figsize=(12, 6),
+        figsize=(10, 6),
         color={'pee': 'gold', 'poo': 'saddlebrown'},
         width=0.8,
         edgecolor='black'
     )
-    plt.title("Daily Toilet Usage (Last 14 Days)")
+    #plt.title("Daily Toilet Usage (Last 14 Days)")
+    plt.title(f"Daily Toilet Usage (Last 14 Days)\nGenerated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
     plt.xlabel("Date")
     plt.ylabel("Number of Events")
     plt.xticks(rotation=45, ha='center')
@@ -213,9 +224,36 @@ def generate_usage_bar_chart():
 
     os.makedirs("static", exist_ok=True)
     plt.savefig("static/toilet_usage_bar_chart.png")
+    plt.savefig("../my_dakboard_data/charts/toilet_usage_bar_chart.png")
     plt.close()
 
+    push_chart_to_repo("toilet_usage_bar_chart.png", "../my_dakboard_data/charts")
+
+def push_chart_to_repo(image_filename, repo_path="../my_dakboard_data/"):
+    """
+    Push a generated chart image to a public GitHub repo.
+    
+    Args:
+        image_filename (str): Name of the chart image (e.g., 'weight_chart.png')
+        repo_path (str): Relative or absolute path to the cloned repo directory
+    """
+    image_path = os.path.join(repo_path, image_filename)
+
+    if not os.path.exists(image_path):
+        raise FileNotFoundError(f"{image_path} does not exist")
+
+    # Build a timestamped commit message
+    commit_msg = f"Update {image_filename} - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+
+    try:
+        subprocess.run(["git", "-C", repo_path, "add", f"{image_filename}"], check=True)
+        subprocess.run(["git", "-C", repo_path, "commit", "-m", commit_msg], check=True)
+        subprocess.run(["git", "-C", repo_path, "push"], check=True)
+        print(f"✅ Pushed {image_filename} to GitHub repo at {repo_path}")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Git operation failed: {e}")
+
 if __name__ == "__main__":
-    #generate_graph()
-    #generate_duration_histogram()
+    generate_graph()
+    generate_duration_histogram()
     generate_usage_bar_chart()
