@@ -62,9 +62,9 @@ The dashboard is used to feed into **DAKboard displays** for at-a-glance monitor
    ###Run the Container
    ```bash
    docker run -d \
-  --name Petkit_Dashboard \
-  --env-file .env \
-  <Petkit_Dashboard>
+   --name Petkit_Dashboard \
+   --env-file .env \
+   <Petkit_Dashboard>
 
 ## 📊 Screenshots
 
