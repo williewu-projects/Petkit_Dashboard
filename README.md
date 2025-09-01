@@ -54,7 +54,17 @@ The dashboard is used to feed into **DAKboard displays** for at-a-glance monitor
    GITHUB_USERNAME=[github username]
    GIT_AUTHOR_NAME=[author name]
    GIT_AUTHOR_EMAIL=[author email]
-4. [insert Docker instructions]
+4. Run with Docker   
+   ###Build the Image
+   ```bash
+   docker build -t Petkit_Dashboard
+
+   ###Run the Container
+   ```bash
+   docker run -d \
+  --name Petkit_Dashboard \
+  --env-file .env \
+  <Petkit_Dashboard
 
 ## 📊 Screenshots
 
