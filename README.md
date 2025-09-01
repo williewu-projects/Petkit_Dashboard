@@ -45,9 +45,15 @@ The dashboard is used to feed into **DAKboard displays** for at-a-glance monitor
 3. Configure environment variables in .env:
    ```
    DB_HOST=localhost
-   DB_USER=youruser
-   DB_PASS=yourpassword
-   DB_NAME=petkit
+   DB_PORT=5433
+   DB_USER=[youruser]
+   DB_PASS=[yourpassword]
+   DB_NAME=[petkit]
+   GITHUB_REPO=[your repo]
+   GITHUB_PAT=[your github personal access token]
+   GITHUB_USERNAME=[github username]
+   GIT_AUTHOR_NAME=[author name]
+   GIT_AUTHOR_EMAIL=[author email]
 4. [insert Docker instructions]
 
 ## 📊 Screenshots
